@@ -1,3 +1,4 @@
+/*
 uranium + kidney + cabbage / arnica Delete Mark as Potion Mark as Close Mark as Nothing
 silver + kidney + crystalline / jaslah Delete Mark as Potion Mark as Close Mark as Nothing
 silver + ear + lettuce / water lily Delete Mark as Potion Mark as Close Mark as Nothing
@@ -9,3 +10,4 @@ osmium + lung + lobelia / comfrey Delete Mark as Potion Mark as Close Mark as No
 pyrite + kidney + spinach / h'cliz Delete Mark as Potion Mark as Close Mark as Nothing
 rhodium + kidney + raspberry / bloodroot Delete Mark as Potion Mark as Close Mark as Nothing
 rhodium + lung + cabbage / arnica Delete Mark as Potion Mark as Close Mark as Nothing
+*/
