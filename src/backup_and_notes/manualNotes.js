@@ -11,3 +11,17 @@ pyrite + kidney + spinach / h'cliz Delete Mark as Potion Mark as Close Mark as N
 rhodium + kidney + raspberry / bloodroot Delete Mark as Potion Mark as Close Mark as Nothing
 rhodium + lung + cabbage / arnica Delete Mark as Potion Mark as Close Mark as Nothing
 */
+/*
+
+potions:
+
+Name	Attribute	Herb
+Painkiller	+con	Mandrake :
+Brainstormer	+int	H'Cliz : AUTUMN
+Reflex	+dex	Boneset : SUMMER
+Sagemind	+wis	Jaslah : SUMMER
+Damager	+str	Blood Moss : AUTUMN(arvio)
+FagFood	+cha	Mystic Carrot :
+
+
+*/
