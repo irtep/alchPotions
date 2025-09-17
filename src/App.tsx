@@ -390,7 +390,7 @@ function App() {
         ))}
       </ul>
 
-      <h3>In Flask (not resolved)</h3>
+      <h3>{`In Flask (not resolved) ${inFlask.length}`}</h3>
       <ul>
         {inFlask.map((f) => (
           <li key={f.id}>
@@ -413,7 +413,7 @@ function App() {
           background: 'darkBlue'
         }}
       >
-        0.1.5
+        0.1.7
       </div>
     </div>
   );

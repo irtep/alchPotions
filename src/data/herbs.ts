@@ -30,3 +30,41 @@ export const herbs: string[] = [
   "strawberry / mugwort",
   "turnip / mystic carrot",
 ];
+
+export type Seasons = {
+  name: string;
+  season1: string;
+  season2: string;
+}
+
+export const herbSeasons: Seasons[] = [
+  { name: "appletree / wormwood", season1: "autumn", season2: "autumn"},
+  {name: "barberry / yarrow", season1: "autum", season2: "autumn"},
+  {name: "blueberry / wolfbane", season1: "summer", season2: "summer"},
+  {name: "burdock / chickweed", season1: "summer", season2: "spring"},
+  {name: "cabbage / arnica", season1: "summer", season2: "summer"},
+  {name: "carrot / thistle", season1: "summer", season2: "autumn"},
+  {name: "cauliflower / costmary", season1: "summer", season2: "summer"},
+  {name: "chicory / borage", season1: "winter", season2: "summer"},
+  {name: "cotton / mystic spinach", season1: "autumn", season2: "summer"},
+  {name: "crystalline / jaslah", season1: "winter", season2: "autumn"},
+  {name: "elder / honeysuckle", season1: "", season2: "summer"},
+  {name: "foxglove / holly berry", season1: "", season2: ""},
+  {name: "garlic / nightshade", season1: "summer", season2: "summer"},
+  {name: "ginseng / mistletoe", season1: "winter", season2: "autum"},
+  {name: "hemlock / tomato", season1: "summer", season2: "summer"},
+  {name: "henbane / jimsonweed", season1: "summer", season2: "summer"},
+  {name: "lettuce / water lily", season1: "summer", season2: "spring"},
+  {name: "lobelia / comfrey", season1: "summer", season2: "winter"},
+  {name: "mushroom / mangrel", season1: "spring", season2: "all"},
+  {name: "onion / bloodmoss", season1: "summer", season2: "autumn"},
+  {name: "pear / boneset", season1: "summer", season2: "summer"},
+  {name: "plumtree / sweet flag", season1: "summer", season2: "winter"},
+  {name: "potato / mandrake", season1: "summer", season2: "winter"},
+  {name: "raspberry / bloodroot", season1: "summer", season2: "winter"},
+  {name: "rhubarb / soapwort", season1: "summer", season2: "winter"},
+  {name: "vine seed / lungwort", season1: "summer", season2: "summer"},
+  {name: "spinach / h'cliz", season1: "summer", season2: "autumn"},
+  {name: "strawberry / mugwort", season1: "summer", season2: "autumn"},
+  {name: "turnip / mystic carrot", season1: "summer", season2: "summer"},
+];
