@@ -309,8 +309,8 @@ function App() {
 
       {/* Backup */}
       <div style={{ marginTop: "1rem" }}>
-        <button onClick={exportToClipboard}>Export to Clipboard</button>
-        <button onClick={importFromClipboard} style={{ marginLeft: "1rem" }}>Import from Clipboard</button>
+        <button onClick={exportToClipboard} style={{ background: 'green' }}>Export to Clipboard</button>
+        <button onClick={importFromClipboard} style={{ marginLeft: "1rem", background: 'darkRed', color: 'white' }}>Import from Clipboard (careful!))</button>
       </div>
 
       <h2>{message}</h2>
@@ -361,7 +361,7 @@ function App() {
             <span style={{ background: getColor("organ", organs.indexOf(p.combo.organ)), padding: "2px 6px", borderRadius: 4 }}>{p.combo.organ}</span> +{" "}
             <span style={{ background: getColor("herb", herbs.indexOf(p.combo.herb)), padding: "2px 6px", borderRadius: 4 }}>{p.combo.herb}</span> →{" "}
             <strong>{p.name}</strong>{" "}
-            <button onClick={() => deletePotion(p.id)}>Delete</button>
+            <button style={{ background: 'red' }}onClick={() => deletePotion(p.id)}>Delete</button>
           </li>
         ))}
       </ul>
@@ -373,7 +373,7 @@ function App() {
             <span style={{ background: getColor("metal", metals.indexOf(c.combo.metal)), padding: "2px 6px", borderRadius: 4 }}>{c.combo.metal}</span> +{" "}
             <span style={{ background: getColor("organ", organs.indexOf(c.combo.organ)), padding: "2px 6px", borderRadius: 4 }}>{c.combo.organ}</span> +{" "}
             <span style={{ background: getColor("herb", herbs.indexOf(c.combo.herb)), padding: "2px 6px", borderRadius: 4 }}>{c.combo.herb}</span> (near <strong>{c.name}</strong>){" "}
-            <button onClick={() => deleteCloseHint(c.id)}>Delete</button>
+            <button style={{ background: 'red' }}onClick={() => deleteCloseHint(c.id)}>Delete</button>
           </li>
         ))}
       </ul>
@@ -385,7 +385,7 @@ function App() {
             <span style={{ background: getColor("metal", metals.indexOf(n.combo.metal)), padding: "2px 6px", borderRadius: 4 }}>{n.combo.metal}</span> +{" "}
             <span style={{ background: getColor("organ", organs.indexOf(n.combo.organ)), padding: "2px 6px", borderRadius: 4 }}>{n.combo.organ}</span> +{" "}
             <span style={{ background: getColor("herb", herbs.indexOf(n.combo.herb)), padding: "2px 6px", borderRadius: 4 }}>{n.combo.herb}</span>{" "}
-            <button onClick={() => deleteNothing(n.id)}>Delete</button>
+            <button style={{ background: 'red' }}onClick={() => deleteNothing(n.id)}>Delete</button>
           </li>
         ))}
       </ul>
@@ -397,7 +397,7 @@ function App() {
             <span style={{ background: getColor("metal", metals.indexOf(f.combo.metal)), padding: "2px 6px", borderRadius: 4 }}>{f.combo.metal}</span> +{" "}
             <span style={{ background: getColor("organ", organs.indexOf(f.combo.organ)), padding: "2px 6px", borderRadius: 4 }}>{f.combo.organ}</span> +{" "}
             <span style={{ background: getColor("herb", herbs.indexOf(f.combo.herb)), padding: "2px 6px", borderRadius: 4 }}>{f.combo.herb}</span>{" "}
-            <button onClick={() => deleteInFlask(f.id)}>Delete</button>{" "}
+            <button style={{ background: 'red' }}onClick={() => deleteInFlask(f.id)}>Delete</button>{" "}
             <button onClick={() => { deleteInFlask(f.id); saveResult("potion", prompt("Enter potion name:") || undefined, f.combo); }}>Mark Potion</button>{" "}
             <button onClick={() => { deleteInFlask(f.id); saveResult("close", prompt("Enter potion name for close hint:") || undefined, f.combo); }}>Mark Close</button>{" "}
             <button onClick={() => { deleteInFlask(f.id); saveResult("nothing", undefined, f.combo); }}>Mark Nothing</button>
@@ -413,7 +413,7 @@ function App() {
           background: 'darkBlue'
         }}
       >
-        0.1.7
+        0.1.8
       </div>
     </div>
   );
