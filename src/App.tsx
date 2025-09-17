@@ -324,7 +324,7 @@ function App() {
               <strong>Metals:</strong>{" "}
               {recommendedMetals.map((m) => (
                 <span key={m} style={{ padding: "2px 6px", margin: 2, borderRadius: 4, background: getColor("metal", metals.indexOf(m)) }}>
-                  {m}
+                  {m} <input type="checkbox" />
                 </span>
               ))}
             </div>
@@ -334,7 +334,7 @@ function App() {
               <strong>Organs:</strong>{" "}
               {recommendedOrgans.map((o) => (
                 <span key={o} style={{ padding: "2px 6px", margin: 2, borderRadius: 4, background: getColor("organ", organs.indexOf(o)) }}>
-                  {o}
+                  {o} <input type="checkbox" />
                 </span>
               ))}
             </div>
@@ -344,7 +344,7 @@ function App() {
               <strong>Herbs:</strong>{" "}
               {recommendedHerbs.map((h) => (
                 <span key={h} style={{ padding: "2px 6px", margin: 2, borderRadius: 4, background: getColor("herb", herbs.indexOf(h)) }}>
-                  {h}
+                  {h} <input type="checkbox" />
                 </span>
               ))}
             </div>
@@ -378,7 +378,7 @@ function App() {
         ))}
       </ul>
 
-      <h3>Nothing Tried</h3>
+      <h3>Nothing</h3>
       <ul>
         {nothingTried.map((n) => (
           <li key={n.id}>
@@ -413,7 +413,7 @@ function App() {
           background: 'darkBlue'
         }}
       >
-        0.1.4
+        0.1.5
       </div>
     </div>
   );
