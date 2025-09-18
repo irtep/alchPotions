@@ -1,5 +1,5 @@
 import React from "react";
-import type { Combo, Potion, CloseHint, NothingTried, InFlask } from "../App";
+import type { Potion, CloseHint, NothingTried, InFlask } from "../App";
 import { metals } from "../data/metals";
 import { herbs } from "../data/herbs";
 import { getColor } from "../functions/helpFunctions";
@@ -27,7 +27,6 @@ const OrganMatrix: React.FC<OrganMatrixProps> = ({ organ, potions, closeHints, n
   const validHerbs = herbs.filter((h) => !forbiddenHerbs.has(h));
 
   const getCellContent = (metal: string, herb: string) => {
-    const combo: Combo = { metal, organ, herb };
 
     const potion = potions.find(
       (p) => p.combo.metal === metal && p.combo.organ === organ && p.combo.herb === herb
@@ -59,13 +58,13 @@ const OrganMatrix: React.FC<OrganMatrixProps> = ({ organ, potions, closeHints, n
         <thead>
           <tr>
             <th style={{ background: "#333", color: "white" }}>Metal \\ Herb</th>
-            {validHerbs.map((h, i) => (
+            {validHerbs.map((h) => (
               <th key={h} style={{ background: getColor("herb", herbs.indexOf(h)) }}>{h}</th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {validMetals.map((m, i) => (
+          {validMetals.map((m) => (
             <tr key={m}>
               <td style={{ background: getColor("metal", metals.indexOf(m)) }}>{m}</td>
               {validHerbs.map((h) => (
