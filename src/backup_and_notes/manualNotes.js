@@ -23,5 +23,7 @@ Sagemind	+wis	Jaslah : SUMMER
 Damager	+str	Blood Moss : AUTUMN(arvio)
 FagFood	+cha	Mystic Carrot :
 
-
+Check:
+chromium_kidney_nighshade: close to teleport without error that is also: (not added!)
+starmetal_kidney_potato... but nightshade+kidney nothing
 */
