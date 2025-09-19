@@ -239,32 +239,65 @@ function App() {
         <label>Metal: </label>
         <select value={metal} onChange={(e) => setMetal(e.target.value)}>
           <option value="">-- select metal --</option>
-          {metals.map((m, i) => (
-            <option
-              key={m}
-              value={m}
-              disabled={
-                // Case 1: all three selected → must be valid
-                (organ && herb && !isComboRemaining(m, organ, herb)) ||
+          {metals.map((m, i) => {
+            const normalize = (s?: string) => (s || "").toLowerCase().trim();
 
-                // Case 2: this metal + selected organ is impossible
+            // check if this metal is "close" with selected organ or herb
+            const isClose =
+              !!(
                 (organ &&
-                  nothingTried.some((n) => n.combo.metal === m && n.combo.organ === organ)) ||
-
-                // Case 3: this metal + selected herb is impossible
+                  closeHints.some(
+                    (c) =>
+                      normalize(c.combo.organ) === normalize(organ) &&
+                      normalize(c.combo.metal) === normalize(m)
+                  )) ||
                 (herb &&
-                  nothingTried.some((n) => n.combo.metal === m && n.combo.herb === herb)) ||
+                  closeHints.some(
+                    (c) =>
+                      normalize(c.combo.herb) === normalize(herb) &&
+                      normalize(c.combo.metal) === normalize(m)
+                  ))
+              );
 
-                // Already used
-                isPotionFound(m, organ || "", herb || "") ||
-                isInFlask(m, organ || "", herb || "")
-              }
-              style={{ background: getColor("metal", i) }}
-            >
-              {m}
-            </option>
+            const isDisabled =
+              // Case 1: all three selected → must be valid
+              (organ && herb && !isComboRemaining(m, organ, herb)) ||
 
-          ))}
+              // Case 2: this metal + selected organ is impossible
+              (organ &&
+                nothingTried.some(
+                  (n) =>
+                    normalize(n.combo.metal) === normalize(m) &&
+                    normalize(n.combo.organ) === normalize(organ)
+                )) ||
+
+              // Case 3: this metal + selected herb is impossible
+              (herb &&
+                nothingTried.some(
+                  (n) =>
+                    normalize(n.combo.metal) === normalize(m) &&
+                    normalize(n.combo.herb) === normalize(herb)
+                )) ||
+
+              // Already used
+              isPotionFound(m, organ || "", herb || "") ||
+              isInFlask(m, organ || "", herb || "");
+
+            return (
+              <option
+                key={m}
+                value={m}
+                disabled={isDisabled}
+                style={{
+                  background: getColor("metal", i),
+                  color: isClose ? "darkRed" : "black",
+                }}
+              >
+                {m}
+              </option>
+            );
+          })}
+
         </select>
       </div>
 
@@ -339,7 +372,6 @@ function App() {
               </option>
             );
           })}
-
 
         </select>
       </div>
@@ -469,7 +501,7 @@ function App() {
           background: 'darkBlue'
         }}
       >
-        0.3
+        0.3.1
       </div>
     </div>
   );
