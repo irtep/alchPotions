@@ -244,7 +244,18 @@ function App() {
               key={m}
               value={m}
               disabled={
+                // Case 1: all three selected → must be valid
                 (organ && herb && !isComboRemaining(m, organ, herb)) ||
+
+                // Case 2: this metal + selected organ is impossible
+                (organ &&
+                  nothingTried.some((n) => n.combo.metal === m && n.combo.organ === organ)) ||
+
+                // Case 3: this metal + selected herb is impossible
+                (herb &&
+                  nothingTried.some((n) => n.combo.metal === m && n.combo.herb === herb)) ||
+
+                // Already used
                 isPotionFound(m, organ || "", herb || "") ||
                 isInFlask(m, organ || "", herb || "")
               }
@@ -252,6 +263,7 @@ function App() {
             >
               {m}
             </option>
+
           ))}
         </select>
       </div>
@@ -281,22 +293,57 @@ function App() {
         <label>Herb: </label>
         <select value={herb} onChange={(e) => setHerb(e.target.value)}>
           <option value="">-- select herb --</option>
-          {herbs.map((h, i) => (
-            <option
-              key={h}
-              value={h}
-              disabled={
-                (metal && organ && !isComboRemaining(metal, organ, h)) ||
-                isPotionFound(metal || "", organ || "", h) ||
-                isInFlask(metal || "", organ || "", h)
-              }
-              style={{ background: getColor("herb", i) }}
-            >
-              {h}
-            </option>
-          ))}
+          {herbs.map((h, i) => {
+            const normalize = (s?: string) => (s || "").toLowerCase().trim();
+
+            // check if this herb is "close" with selected organ
+            const isClose =
+              Boolean(organ) &&
+              closeHints.some(
+                (c) =>
+                  normalize(c.combo.organ) === normalize(organ) &&
+                  normalize(c.combo.herb) === normalize(h)
+              );
+
+            const isDisabled =
+              // Case 1: full combo selected, must still exist
+              (metal && organ && !isComboRemaining(metal, organ, h)) ||
+
+              // Case 2: this herb + selected metal is impossible
+              (metal &&
+                nothingTried.some(
+                  (n) => normalize(n.combo.metal) === normalize(metal) && normalize(n.combo.herb) === normalize(h)
+                )) ||
+
+              // Case 3: this herb + selected organ is impossible
+              (organ &&
+                nothingTried.some(
+                  (n) => normalize(n.combo.organ) === normalize(organ) && normalize(n.combo.herb) === normalize(h)
+                )) ||
+
+              // Already resolved
+              isPotionFound(metal || "", organ || "", h) ||
+              isInFlask(metal || "", organ || "", h);
+
+            return (
+              <option
+                key={h}
+                value={h}
+                disabled={isDisabled}
+                style={{
+                  background: getColor("herb", i),
+                  color: isClose ? "darkRed" : "black",
+                }}
+              >
+                {h}
+              </option>
+            );
+          })}
+
+
         </select>
       </div>
+
 
       {/* Buttons */}
       <div style={{ marginTop: "1rem" }}>
@@ -422,7 +469,7 @@ function App() {
           background: 'darkBlue'
         }}
       >
-        0.2.0
+        0.3
       </div>
     </div>
   );
