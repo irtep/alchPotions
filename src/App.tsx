@@ -5,6 +5,7 @@ import { herbs } from "./data/herbs";
 import { v4 as uuidv4 } from "uuid";
 import { countMatches, generateAllCombos, getColor } from "./functions/helpFunctions";
 import OrganMatrix from "./components/OrganMatrix";
+import IngredientDropdown from "./components/IngredientDropDown";
 
 export type Combo = { metal: string; organ: string; herb: string };
 export type Potion = { id: string; combo: Combo; name: string };
@@ -64,14 +65,6 @@ function App() {
     const data = { potions, closeHints, nothingTried, inFlask };
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
   }, [potions, closeHints, nothingTried, inFlask]);
-
-  // --- Helpers ---
-  const isComboRemaining = (m?: string, o?: string, h?: string) =>
-    remaining.some((c) => (!m || c.metal === m) && (!o || c.organ === o) && (!h || c.herb === h));
-  const isPotionFound = (m: string, o: string, h: string) =>
-    potions.some((p) => p.combo.metal === m && p.combo.organ === o && p.combo.herb === h);
-  const isInFlask = (m: string, o: string, h: string) =>
-    inFlask.some((f) => f.combo.metal === m && f.combo.organ === o && f.combo.herb === h);
 
   const saveResult = (
     result: "potion" | "close" | "nothing",
@@ -178,202 +171,103 @@ function App() {
     }
   };
 
-  // --- Smart recommender ---
-  const getRecommendations = () => {
-    // If nothing is selected, return empty
-    if (!metal && !organ && !herb) {
-      return { recommendedMetals: [], recommendedOrgans: [], recommendedHerbs: [] };
-    }
+  // --- Helpers ---
+  const isComboRemaining = (m?: string, o?: string, h?: string) =>
+    remaining.some((c) => (!m || c.metal === m) && (!o || c.organ === o) && (!h || c.herb === h));
 
-    // Filter remaining combos based on current selection
-    let filtered = remaining;
-    if (metal) filtered = filtered.filter((c) => c.metal === metal);
-    if (organ) filtered = filtered.filter((c) => c.organ === organ);
-    if (herb) filtered = filtered.filter((c) => c.herb === herb);
+  const countIngredients = () => {
+    const metalCounts: Record<string, number> = {};
+    const organCounts: Record<string, number> = {};
+    const herbCounts: Record<string, number> = {};
 
-    // Collect forbidden ingredients **per selected combination**
-    const forbiddenMetals = new Set(
-      [...nothingTried, ...closeHints]
-        .filter((item) => !metal || item.combo.metal === metal)
-        .filter((item) => !organ || item.combo.organ === organ)
-        .filter((item) => !herb || item.combo.herb === herb)
-        .map((item) => item.combo.metal)
-    );
-    const forbiddenOrgans = new Set(
-      [...nothingTried, ...closeHints]
-        .filter((item) => !metal || item.combo.metal === metal)
-        .filter((item) => !organ || item.combo.organ === organ)
-        .filter((item) => !herb || item.combo.herb === herb)
-        .map((item) => item.combo.organ)
-    );
-    const forbiddenHerbs = new Set(
-      [...nothingTried, ...closeHints]
-        .filter((item) => !metal || item.combo.metal === metal)
-        .filter((item) => !organ || item.combo.organ === organ)
-        .filter((item) => !herb || item.combo.herb === herb)
-        .map((item) => item.combo.herb)
-    );
+    // loop through all relevant arrays
+    [...potions, ...closeHints, ...nothingTried].forEach((entry) => {
+      const { metal, organ, herb } = entry.combo;
 
-    // Recommended options are those in filtered combos but not forbidden
-    const recommendedMetals = !metal
-      ? Array.from(new Set(filtered.map((c) => c.metal))).filter((m) => !forbiddenMetals.has(m))
-      : [];
-    const recommendedOrgans = !organ
-      ? Array.from(new Set(filtered.map((c) => c.organ))).filter((o) => !forbiddenOrgans.has(o))
-      : [];
-    const recommendedHerbs = !herb
-      ? Array.from(new Set(filtered.map((c) => c.herb))).filter((h) => !forbiddenHerbs.has(h))
-      : [];
+      metalCounts[metal] = (metalCounts[metal] || 0) + 1;
+      organCounts[organ] = (organCounts[organ] || 0) + 1;
+      herbCounts[herb] = (herbCounts[herb] || 0) + 1;
+    });
 
-    return { recommendedMetals, recommendedOrgans, recommendedHerbs };
+    return { metalCounts, organCounts, herbCounts };
   };
 
-  const { recommendedMetals, recommendedOrgans, recommendedHerbs } = getRecommendations();
 
   return (
     <div style={{ padding: "2rem" }}>
       <h1>Potion Research Helper</h1>
 
       {/* Dropdowns */}
-      <div>
-        <label>Metal: </label>
-        <select value={metal} onChange={(e) => setMetal(e.target.value)}>
-          <option value="">-- select metal --</option>
-          {metals.map((m, i) => {
-            const normalize = (s?: string) => (s || "").toLowerCase().trim();
+      <IngredientDropdown
+        type="organ"
+        options={organs}
+        value={organ}
+        setValue={setOrgan}
+        selectedMetal={metal}
+        selectedHerb={herb}
+        closeHints={closeHints}
+        nothingTried={nothingTried}
+        potions={potions}
+        inFlask={inFlask}
+        isComboRemaining={isComboRemaining}
+      />
 
-            // check if this metal is "close" with selected organ or herb
-            const isClose =
-              !!(
-                (organ &&
-                  closeHints.some(
-                    (c) =>
-                      normalize(c.combo.organ) === normalize(organ) &&
-                      normalize(c.combo.metal) === normalize(m)
-                  )) ||
-                (herb &&
-                  closeHints.some(
-                    (c) =>
-                      normalize(c.combo.herb) === normalize(herb) &&
-                      normalize(c.combo.metal) === normalize(m)
-                  ))
-              );
+      <IngredientDropdown
+        type="metal"
+        options={metals}
+        value={metal}
+        setValue={setMetal}
+        selectedOrgan={organ}
+        selectedHerb={herb}
+        closeHints={closeHints}
+        nothingTried={nothingTried}
+        potions={potions}
+        inFlask={inFlask}
+        isComboRemaining={isComboRemaining}
+      />
 
-            const isDisabled =
-              // Case 1: all three selected → must be valid
-              (organ && herb && !isComboRemaining(m, organ, herb)) ||
+      <IngredientDropdown
+        type="herb"
+        options={herbs}
+        value={herb}
+        setValue={setHerb}
+        selectedMetal={metal}
+        selectedOrgan={organ}
+        closeHints={closeHints}
+        nothingTried={nothingTried}
+        potions={potions}
+        inFlask={inFlask}
+        isComboRemaining={isComboRemaining}
+      />
 
-              // Case 2: this metal + selected organ is impossible
-              (organ &&
-                nothingTried.some(
-                  (n) =>
-                    normalize(n.combo.metal) === normalize(m) &&
-                    normalize(n.combo.organ) === normalize(organ)
-                )) ||
-
-              // Case 3: this metal + selected herb is impossible
-              (herb &&
-                nothingTried.some(
-                  (n) =>
-                    normalize(n.combo.metal) === normalize(m) &&
-                    normalize(n.combo.herb) === normalize(herb)
-                )) ||
-
-              // Already used
-              isPotionFound(m, organ || "", herb || "") ||
-              isInFlask(m, organ || "", herb || "");
-
-            return (
-              <option
-                key={m}
-                value={m}
-                disabled={isDisabled}
-                style={{
-                  background: getColor("metal", i),
-                  color: isClose ? "darkRed" : "black",
-                }}
-              >
-                {m}
-              </option>
-            );
-          })}
-
-        </select>
-      </div>
-
-      <div>
-        <label>Organ: </label>
-        <select value={organ} onChange={(e) => setOrgan(e.target.value)}>
-          <option value="">-- select organ --</option>
-          {organs.map((o, i) => (
-            <option
-              key={o}
-              value={o}
-              disabled={
-                (metal && herb && !isComboRemaining(metal, o, herb)) ||
-                isPotionFound(metal || "", o, herb || "") ||
-                isInFlask(metal || "", o, herb || "")
-              }
-              style={{ background: getColor("organ", i) }}
-            >
-              {o}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div>
-        <label>Herb: </label>
-        <select value={herb} onChange={(e) => setHerb(e.target.value)}>
-          <option value="">-- select herb --</option>
-          {herbs.map((h, i) => {
-            const normalize = (s?: string) => (s || "").toLowerCase().trim();
-
-            // check if this herb is "close" with selected organ
-            const isClose =
-              Boolean(organ) &&
-              closeHints.some(
-                (c) =>
-                  normalize(c.combo.organ) === normalize(organ) &&
-                  normalize(c.combo.herb) === normalize(h)
-              );
-
-            const isDisabled =
-              // Case 1: full combo selected, must still exist
-              (metal && organ && !isComboRemaining(metal, organ, h)) ||
-
-              // Case 2: this herb + selected metal is impossible
-              (metal &&
-                nothingTried.some(
-                  (n) => normalize(n.combo.metal) === normalize(metal) && normalize(n.combo.herb) === normalize(h)
-                )) ||
-
-              // Case 3: this herb + selected organ is impossible
-              (organ &&
-                nothingTried.some(
-                  (n) => normalize(n.combo.organ) === normalize(organ) && normalize(n.combo.herb) === normalize(h)
-                )) ||
-
-              // Already resolved
-              isPotionFound(metal || "", organ || "", h) ||
-              isInFlask(metal || "", organ || "", h);
-
-            return (
-              <option
-                key={h}
-                value={h}
-                disabled={isDisabled}
-                style={{
-                  background: getColor("herb", i),
-                  color: isClose ? "darkRed" : "black",
-                }}
-              >
-                {h}
-              </option>
-            );
-          })}
-
-        </select>
+      {/* Ingredient Usage Summary */}
+      <div style={{ marginTop: "1rem", padding: "1rem", border: "1px solid gray" }}>
+        <h3>Ingredient Usage Summary</h3>
+        {(() => {
+          const { metalCounts, organCounts, herbCounts } = countIngredients();
+          return (
+            <>
+              <p>
+                <strong>Organs:</strong>{" "}
+                {Object.entries(organCounts)
+                  .map(([o, count]) => `${o}: ${count}`)
+                  .join(", ")}
+              </p>
+              <p>
+                <strong>Metals:</strong>{" "}
+                {Object.entries(metalCounts)
+                  .map(([m, count]) => `${m}: ${count}`)
+                  .join(", ")}
+              </p>
+              <p>
+                <strong>Herbs:</strong>{" "}
+                {Object.entries(herbCounts)
+                  .map(([h, count]) => `${h}: ${count}`)
+                  .join(", ")}
+              </p>
+            </>
+          );
+        })()}
       </div>
 
 
@@ -387,50 +281,7 @@ function App() {
         <button onClick={saveInFlask} style={{ marginLeft: "1rem" }}>In Flask</button>
       </div>
 
-      {/* Backup */}
-      <div style={{ marginTop: "1rem" }}>
-        <button onClick={exportToClipboard} style={{ background: 'green' }}>Export to Clipboard</button>
-        <button onClick={importFromClipboard} style={{ marginLeft: "1rem", background: 'darkRed', color: 'white' }}>Import from Clipboard (careful!))</button>
-      </div>
-
       <h2>{message}</h2>
-
-      {/* Recommendations */}
-      {(recommendedMetals.length > 0 || recommendedOrgans.length > 0 || recommendedHerbs.length > 0) && (
-        <div style={{ marginTop: "1rem" }}>
-          <h3>Recommended</h3>
-          {recommendedMetals.length > 0 && (
-            <div>
-              <strong>Metals:</strong>{" "}
-              {recommendedMetals.map((m) => (
-                <span key={m} style={{ padding: "2px 6px", margin: 2, borderRadius: 4, background: getColor("metal", metals.indexOf(m)) }}>
-                  {m} <input type="checkbox" />
-                </span>
-              ))}
-            </div>
-          )}
-          {recommendedOrgans.length > 0 && (
-            <div>
-              <strong>Organs:</strong>{" "}
-              {recommendedOrgans.map((o) => (
-                <span key={o} style={{ padding: "2px 6px", margin: 2, borderRadius: 4, background: getColor("organ", organs.indexOf(o)) }}>
-                  {o} <input type="checkbox" />
-                </span>
-              ))}
-            </div>
-          )}
-          {recommendedHerbs.length > 0 && (
-            <div>
-              <strong>Herbs:</strong>{" "}
-              {recommendedHerbs.map((h) => (
-                <span key={h} style={{ padding: "2px 6px", margin: 2, borderRadius: 4, background: getColor("herb", herbs.indexOf(h)) }}>
-                  {h} <input type="checkbox" />
-                </span>
-              ))}
-            </div>
-          )}
-        </div>
-      )}
 
       {/* Lists */}
       <h3>Found Potions</h3>
@@ -448,15 +299,48 @@ function App() {
 
       <h3>Close Hints</h3>
       <ul>
-        {closeHints.map((c) => (
-          <li key={c.id}>
-            <span style={{ background: getColor("metal", metals.indexOf(c.combo.metal)), padding: "2px 6px", borderRadius: 4 }}>{c.combo.metal}</span> +{" "}
-            <span style={{ background: getColor("organ", organs.indexOf(c.combo.organ)), padding: "2px 6px", borderRadius: 4 }}>{c.combo.organ}</span> +{" "}
-            <span style={{ background: getColor("herb", herbs.indexOf(c.combo.herb)), padding: "2px 6px", borderRadius: 4 }}>{c.combo.herb}</span> (near <strong>{c.name}</strong>){" "}
-            <button style={{ background: 'red' }} onClick={() => deleteCloseHint(c.id)}>Delete</button>
-          </li>
-        ))}
+        {closeHints
+          .slice() // make a shallow copy so state isn’t mutated
+          .sort((a, b) => a.name.localeCompare(b.name)) // sort alphabetically by name
+          .map((c) => (
+            <li key={c.id}>
+              <span
+                style={{
+                  background: getColor("metal", metals.indexOf(c.combo.metal)),
+                  padding: "2px 6px",
+                  borderRadius: 4,
+                }}
+              >
+                {c.combo.metal}
+              </span>{" "}
+              +{" "}
+              <span
+                style={{
+                  background: getColor("organ", organs.indexOf(c.combo.organ)),
+                  padding: "2px 6px",
+                  borderRadius: 4,
+                }}
+              >
+                {c.combo.organ}
+              </span>{" "}
+              +{" "}
+              <span
+                style={{
+                  background: getColor("herb", herbs.indexOf(c.combo.herb)),
+                  padding: "2px 6px",
+                  borderRadius: 4,
+                }}
+              >
+                {c.combo.herb}
+              </span>{" "}
+              (near <strong>{c.name}</strong>){" "}
+              <button style={{ background: "red" }} onClick={() => deleteCloseHint(c.id)}>
+                Delete
+              </button>
+            </li>
+          ))}
       </ul>
+
 
       <h3>Nothing</h3>
       <ul>
@@ -495,13 +379,19 @@ function App() {
         inFlask={inFlask}
       />
 
+      {/* Backup */}
+      <div style={{ marginTop: "1rem" }}>
+        <button onClick={exportToClipboard} style={{ background: 'green' }}>Export to Clipboard</button>
+        <button onClick={importFromClipboard} style={{ marginLeft: "1rem", background: 'darkRed', color: 'white' }}>Import from Clipboard (careful!))</button>
+      </div>
+
       <div
         style={{
           color: 'white',
           background: 'darkBlue'
         }}
       >
-        0.3.1
+        0.4.0
       </div>
     </div>
   );

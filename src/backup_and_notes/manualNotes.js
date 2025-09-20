@@ -24,6 +24,8 @@ Damager	+str	Blood Moss : AUTUMN(arvio)
 FagFood	+cha	Mystic Carrot :
 
 Check:
-chromium_kidney_nighshade: close to teleport without error that is also: (not added!)
+chromium_kidney_nighshade: close to teleport without error that is also: (not not added!)
 starmetal_kidney_potato... but nightshade+kidney nothing
+chromium_kidney_lobelia... same
+so should be chromium_kidney_potato
 */
