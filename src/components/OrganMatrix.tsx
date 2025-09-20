@@ -19,10 +19,11 @@ const OrganMatrix: React.FC<OrganMatrixProps> = ({ organ, potions, closeHints, n
   const nothingCombos = new Set(
     nothingTried.map((n) => `${n.combo.metal}|||${n.combo.herb}`)
   );
+  /*
   const potionCombos = new Map<string, string>(
     potions.map((p) => [`${p.combo.metal}|||${p.combo.herb}`, p.name])
   );
-
+*/
   const getCellContent = (metal: string, herb: string) => {
     const key = `${metal}|||${herb}`;
 
