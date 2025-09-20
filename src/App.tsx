@@ -245,23 +245,35 @@ function App() {
         <h3>Ingredient Usage Summary</h3>
         {(() => {
           const { metalCounts, organCounts, herbCounts } = countIngredients();
+
+          // Ensure all ingredients appear, even if 0
+          const completeMetalCounts = Object.fromEntries(
+            metals.map((m) => [m, metalCounts[m] || 0])
+          );
+          const completeOrganCounts = Object.fromEntries(
+            organs.map((o) => [o, organCounts[o] || 0])
+          );
+          const completeHerbCounts = Object.fromEntries(
+            herbs.map((h) => [h, herbCounts[h] || 0])
+          );
+
           return (
             <>
               <p>
-                <strong>Organs:</strong>{" "}
-                {Object.entries(organCounts)
-                  .map(([o, count]) => `${o}: ${count}`)
-                  .join(", ")}
-              </p>
-              <p>
                 <strong>Metals:</strong>{" "}
-                {Object.entries(metalCounts)
+                {Object.entries(completeMetalCounts)
                   .map(([m, count]) => `${m}: ${count}`)
                   .join(", ")}
               </p>
               <p>
+                <strong>Organs:</strong>{" "}
+                {Object.entries(completeOrganCounts)
+                  .map(([o, count]) => `${o}: ${count}`)
+                  .join(", ")}
+              </p>
+              <p>
                 <strong>Herbs:</strong>{" "}
-                {Object.entries(herbCounts)
+                {Object.entries(completeHerbCounts)
                   .map(([h, count]) => `${h}: ${count}`)
                   .join(", ")}
               </p>
@@ -269,7 +281,6 @@ function App() {
           );
         })()}
       </div>
-
 
       {/* Buttons */}
       <div style={{ marginTop: "1rem" }}>
@@ -391,7 +402,7 @@ function App() {
           background: 'darkBlue'
         }}
       >
-        0.4.0
+        0.4.1
       </div>
     </div>
   );
