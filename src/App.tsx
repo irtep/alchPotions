@@ -174,23 +174,36 @@ function App() {
   // --- Helpers ---
   const isComboRemaining = (m?: string, o?: string, h?: string) =>
     remaining.some((c) => (!m || c.metal === m) && (!o || c.organ === o) && (!h || c.herb === h));
-  /*
-  const isPotionFound = (m: string, o: string, h: string) =>
-    potions.some((p) => p.combo.metal === m && p.combo.organ === o && p.combo.herb === h);
-  const isInFlask = (m: string, o: string, h: string) =>
-    inFlask.some((f) => f.combo.metal === m && f.combo.organ === o && f.combo.herb === h);
-*/
+
+  const countIngredients = () => {
+    const metalCounts: Record<string, number> = {};
+    const organCounts: Record<string, number> = {};
+    const herbCounts: Record<string, number> = {};
+
+    // loop through all relevant arrays
+    [...potions, ...closeHints, ...nothingTried].forEach((entry) => {
+      const { metal, organ, herb } = entry.combo;
+
+      metalCounts[metal] = (metalCounts[metal] || 0) + 1;
+      organCounts[organ] = (organCounts[organ] || 0) + 1;
+      herbCounts[herb] = (herbCounts[herb] || 0) + 1;
+    });
+
+    return { metalCounts, organCounts, herbCounts };
+  };
+
+
   return (
     <div style={{ padding: "2rem" }}>
       <h1>Potion Research Helper</h1>
 
       {/* Dropdowns */}
       <IngredientDropdown
-        type="metal"
-        options={metals}
-        value={metal}
-        setValue={setMetal}
-        selectedOrgan={organ}
+        type="organ"
+        options={organs}
+        value={organ}
+        setValue={setOrgan}
+        selectedMetal={metal}
         selectedHerb={herb}
         closeHints={closeHints}
         nothingTried={nothingTried}
@@ -200,11 +213,11 @@ function App() {
       />
 
       <IngredientDropdown
-        type="organ"
-        options={organs}
-        value={organ}
-        setValue={setOrgan}
-        selectedMetal={metal}
+        type="metal"
+        options={metals}
+        value={metal}
+        setValue={setMetal}
+        selectedOrgan={organ}
         selectedHerb={herb}
         closeHints={closeHints}
         nothingTried={nothingTried}
@@ -227,6 +240,37 @@ function App() {
         isComboRemaining={isComboRemaining}
       />
 
+      {/* Ingredient Usage Summary */}
+      <div style={{ marginTop: "1rem", padding: "1rem", border: "1px solid gray" }}>
+        <h3>Ingredient Usage Summary</h3>
+        {(() => {
+          const { metalCounts, organCounts, herbCounts } = countIngredients();
+          return (
+            <>
+              <p>
+                <strong>Organs:</strong>{" "}
+                {Object.entries(organCounts)
+                  .map(([o, count]) => `${o}: ${count}`)
+                  .join(", ")}
+              </p>
+              <p>
+                <strong>Metals:</strong>{" "}
+                {Object.entries(metalCounts)
+                  .map(([m, count]) => `${m}: ${count}`)
+                  .join(", ")}
+              </p>
+              <p>
+                <strong>Herbs:</strong>{" "}
+                {Object.entries(herbCounts)
+                  .map(([h, count]) => `${h}: ${count}`)
+                  .join(", ")}
+              </p>
+            </>
+          );
+        })()}
+      </div>
+
+
       {/* Buttons */}
       <div style={{ marginTop: "1rem" }}>
         <button onClick={() => saveResult("potion", prompt("Enter potion name:") || undefined)}>Found Potion</button>
@@ -235,12 +279,6 @@ function App() {
         </button>
         <button onClick={() => saveResult("nothing")} style={{ marginLeft: "1rem" }}>Nothing</button>
         <button onClick={saveInFlask} style={{ marginLeft: "1rem" }}>In Flask</button>
-      </div>
-
-      {/* Backup */}
-      <div style={{ marginTop: "1rem" }}>
-        <button onClick={exportToClipboard} style={{ background: 'green' }}>Export to Clipboard</button>
-        <button onClick={importFromClipboard} style={{ marginLeft: "1rem", background: 'darkRed', color: 'white' }}>Import from Clipboard (careful!))</button>
       </div>
 
       <h2>{message}</h2>
@@ -261,15 +299,48 @@ function App() {
 
       <h3>Close Hints</h3>
       <ul>
-        {closeHints.map((c) => (
-          <li key={c.id}>
-            <span style={{ background: getColor("metal", metals.indexOf(c.combo.metal)), padding: "2px 6px", borderRadius: 4 }}>{c.combo.metal}</span> +{" "}
-            <span style={{ background: getColor("organ", organs.indexOf(c.combo.organ)), padding: "2px 6px", borderRadius: 4 }}>{c.combo.organ}</span> +{" "}
-            <span style={{ background: getColor("herb", herbs.indexOf(c.combo.herb)), padding: "2px 6px", borderRadius: 4 }}>{c.combo.herb}</span> (near <strong>{c.name}</strong>){" "}
-            <button style={{ background: 'red' }} onClick={() => deleteCloseHint(c.id)}>Delete</button>
-          </li>
-        ))}
+        {closeHints
+          .slice() // make a shallow copy so state isn’t mutated
+          .sort((a, b) => a.name.localeCompare(b.name)) // sort alphabetically by name
+          .map((c) => (
+            <li key={c.id}>
+              <span
+                style={{
+                  background: getColor("metal", metals.indexOf(c.combo.metal)),
+                  padding: "2px 6px",
+                  borderRadius: 4,
+                }}
+              >
+                {c.combo.metal}
+              </span>{" "}
+              +{" "}
+              <span
+                style={{
+                  background: getColor("organ", organs.indexOf(c.combo.organ)),
+                  padding: "2px 6px",
+                  borderRadius: 4,
+                }}
+              >
+                {c.combo.organ}
+              </span>{" "}
+              +{" "}
+              <span
+                style={{
+                  background: getColor("herb", herbs.indexOf(c.combo.herb)),
+                  padding: "2px 6px",
+                  borderRadius: 4,
+                }}
+              >
+                {c.combo.herb}
+              </span>{" "}
+              (near <strong>{c.name}</strong>){" "}
+              <button style={{ background: "red" }} onClick={() => deleteCloseHint(c.id)}>
+                Delete
+              </button>
+            </li>
+          ))}
       </ul>
+
 
       <h3>Nothing</h3>
       <ul>
@@ -308,13 +379,19 @@ function App() {
         inFlask={inFlask}
       />
 
+      {/* Backup */}
+      <div style={{ marginTop: "1rem" }}>
+        <button onClick={exportToClipboard} style={{ background: 'green' }}>Export to Clipboard</button>
+        <button onClick={importFromClipboard} style={{ marginLeft: "1rem", background: 'darkRed', color: 'white' }}>Import from Clipboard (careful!))</button>
+      </div>
+
       <div
         style={{
           color: 'white',
           background: 'darkBlue'
         }}
       >
-        0.3.1
+        0.4.0
       </div>
     </div>
   );
