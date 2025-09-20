@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import { countMatches, generateAllCombos, getColor } from "./functions/helpFunctions";
 import OrganMatrix from "./components/OrganMatrix";
 import IngredientDropdown from "./components/IngredientDropDown";
+import HerbSeasons from "./components/HerbSeasons";
 
 export type Combo = { metal: string; organ: string; herb: string };
 export type Potion = { id: string; combo: Combo; name: string };
@@ -396,13 +397,15 @@ function App() {
         <button onClick={importFromClipboard} style={{ marginLeft: "1rem", background: 'darkRed', color: 'white' }}>Import from Clipboard (careful!))</button>
       </div>
 
+      <HerbSeasons/>
+
       <div
         style={{
           color: 'white',
           background: 'darkBlue'
         }}
       >
-        0.4.1
+        0.4.2
       </div>
     </div>
   );

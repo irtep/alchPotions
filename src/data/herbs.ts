@@ -37,7 +37,7 @@ export type Seasons = {
   season2: string;
 }
 
-export const herbSeasons: Seasons[] = [
+export const allHerbs: Seasons[] = [
   { name: "appletree / wormwood", season1: "autumn", season2: "autumn"},
   {name: "barberry / yarrow", season1: "autum", season2: "autumn"},
   {name: "blueberry / wolfbane", season1: "summer", season2: "summer"},
