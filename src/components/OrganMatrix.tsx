@@ -12,22 +12,17 @@ type OrganMatrixProps = {
   inFlask: InFlask[];
 };
 
-const OrganMatrix: React.FC<OrganMatrixProps> = ({ organ, potions, closeHints, nothingTried, inFlask }) => {
+const OrganMatrix: React.FC<OrganMatrixProps> = ({
+  organ,
+  potions,
+  closeHints,
+  nothingTried,
+  inFlask,
+}) => {
   if (!organ) return null;
 
-  // filter metals/herbs that are NOT in "nothing" with this organ
-  const forbiddenMetals = new Set(
-    nothingTried.filter((n) => n.combo.organ === organ).map((n) => n.combo.metal)
-  );
-  const forbiddenHerbs = new Set(
-    nothingTried.filter((n) => n.combo.organ === organ).map((n) => n.combo.herb)
-  );
-
-  const validMetals = metals.filter((m) => !forbiddenMetals.has(m));
-  const validHerbs = herbs.filter((h) => !forbiddenHerbs.has(h));
-
   const getCellContent = (metal: string, herb: string) => {
-
+    // Find matching entries
     const potion = potions.find(
       (p) => p.combo.metal === metal && p.combo.organ === organ && p.combo.herb === herb
     );
@@ -41,12 +36,12 @@ const OrganMatrix: React.FC<OrganMatrixProps> = ({ organ, potions, closeHints, n
     const nothing = nothingTried.find(
       (n) => n.combo.metal === metal && n.combo.organ === organ && n.combo.herb === herb
     );
-    if (nothing) return "❌ Nothing";
+    if (nothing) return `❌ Nothing`;
 
     const flask = inFlask.find(
       (f) => f.combo.metal === metal && f.combo.organ === organ && f.combo.herb === herb
     );
-    if (flask) return "🧪 In Flask";
+    if (flask) return `🧪 In Flask`;
 
     return "";
   };
@@ -57,18 +52,20 @@ const OrganMatrix: React.FC<OrganMatrixProps> = ({ organ, potions, closeHints, n
       <table border={1} cellPadding={6} style={{ borderCollapse: "collapse" }}>
         <thead>
           <tr>
-            <th style={{ background: "#333", color: "white" }}>Metal \\ Herb</th>
-            {validHerbs.map((h) => (
-              <th key={h} style={{ background: getColor("herb", herbs.indexOf(h)) }}>{h}</th>
+            <th style={{ background: "#333", color: "white" }}>Metal \ Herb</th>
+            {herbs.map((h) => (
+              <th key={h} style={{ background: getColor("herb", herbs.indexOf(h)) }}>
+                {h}
+              </th>
             ))}
           </tr>
         </thead>
         <tbody>
-          {validMetals.map((m) => (
+          {metals.map((m) => (
             <tr key={m}>
               <td style={{ background: getColor("metal", metals.indexOf(m)) }}>{m}</td>
-              {validHerbs.map((h) => (
-                <td key={h + m} style={{ textAlign: "center" }}>
+              {herbs.map((h) => (
+                <td key={m + h} style={{ textAlign: "center" }}>
                   {getCellContent(m, h)}
                 </td>
               ))}
