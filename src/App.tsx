@@ -405,7 +405,7 @@ function App() {
           background: 'darkBlue'
         }}
       >
-        0.4.2
+        0.5.0
       </div>
     </div>
   );
