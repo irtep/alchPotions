@@ -381,7 +381,7 @@ function App() {
         ))}
       </ul>
 
-      <h3>Remaining possible combos: {remaining.length}</h3>
+      <h3>{`Remaining possible combos: ${remaining.length}. potions tried: ${closeHints.length + potions.length + nothingTried.length}`}</h3>
 
       <OrganMatrix
         organ={organ}
@@ -405,7 +405,7 @@ function App() {
           background: 'darkBlue'
         }}
       >
-        0.5.1
+        0.5.2
       </div>
     </div>
   );
