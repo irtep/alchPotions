@@ -26,5 +26,6 @@ FagFood	+cha	Mystic Carrot :
 Autumnina:
 apple ja yarrow, muihin löytyy summer vastikkeet (publicgardenista taitaa saada molemmat)
 
+https://sites.google.com/site/jermusbatmudpit/plant-lore
 
 */
