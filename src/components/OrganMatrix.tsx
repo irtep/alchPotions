@@ -15,17 +15,26 @@ type OrganMatrixProps = {
 const OrganMatrix: React.FC<OrganMatrixProps> = ({ organ, potions, closeHints, nothingTried, inFlask }) => {
   if (!organ) return null;
 
-  // Global "nothing" (failures across ANY organ)
+  // Global "nothing"
   const globalNothingCombos = new Set(
     nothingTried.map((n) => `${n.combo.metal}|||${n.combo.herb}`)
   );
 
-  // Local "nothing" (failures only with THIS organ)
+  // Local "nothing"
   const localNothingCombos = new Set(
     nothingTried
       .filter((n) => n.combo.organ === organ)
       .map((n) => `${n.combo.metal}|||${n.combo.herb}`)
   );
+
+  // Collect metals/herbs that are part of local nothings
+  const highlightMetals = new Set<string>();
+  const highlightHerbs = new Set<string>();
+  localNothingCombos.forEach((key) => {
+    const [metal, herb] = key.split("|||");
+    highlightMetals.add(metal);
+    highlightHerbs.add(herb);
+  });
 
   const getCellContent = (metal: string, herb: string) => {
     const key = `${metal}|||${herb}`;
@@ -42,10 +51,10 @@ const OrganMatrix: React.FC<OrganMatrixProps> = ({ organ, potions, closeHints, n
     );
     if (close) return `⚠️ ${close.name}`;
 
-    // ❌ Local nothing (specific to this organ)
+    // ❌ Local nothing
     if (localNothingCombos.has(key)) return "❌ Local Nothing";
 
-    // ❌ Global nothing (applies to all organs, even if not tested here)
+    // ❌ Global nothing
     if (globalNothingCombos.has(key)) return "❌ Nothing";
 
     // 🧪 In Flask
@@ -65,19 +74,56 @@ const OrganMatrix: React.FC<OrganMatrixProps> = ({ organ, potions, closeHints, n
           <tr>
             <th style={{ background: "#333", color: "white" }}>Metal \\ Herb</th>
             {herbs.map((h) => (
-              <th key={h} style={{ background: getColor("herb", herbs.indexOf(h)) }}>{h}</th>
+              <th
+                key={h}
+                style={{
+                  background: highlightHerbs.has(h)
+                    ? "salmon"
+                    : getColor("herb", herbs.indexOf(h)),
+                }}
+              >
+                {h}
+              </th>
             ))}
           </tr>
         </thead>
         <tbody>
           {metals.map((m) => (
-            <tr key={m}>
-              <td style={{ background: getColor("metal", metals.indexOf(m)) }}>{m}</td>
-              {herbs.map((h) => (
-                <td key={h + m} style={{ textAlign: "center" }}>
-                  {getCellContent(m, h)}
-                </td>
-              ))}
+            <tr
+              key={m}
+              style={{
+                background: highlightMetals.has(m) ? "salmon" : "transparent",
+              }}
+            >
+              <td
+                style={{
+                  background: getColor("metal", metals.indexOf(m)),
+                  fontWeight: highlightMetals.has(m) ? "bold" : "normal",
+                }}
+              >
+                {m}
+              </td>
+              {herbs.map((h) => {
+                const isLocalNothing = localNothingCombos.has(`${m}|||${h}`);
+                const colHighlighted = highlightHerbs.has(h);
+                const rowHighlighted = highlightMetals.has(m);
+
+                return (
+                  <td
+                    key={h + m}
+                    style={{
+                      textAlign: "center",
+                      background: isLocalNothing
+                        ? "lightcoral"
+                        : colHighlighted || rowHighlighted
+                        ? "mistyrose"
+                        : "transparent",
+                    }}
+                  >
+                    {getCellContent(m, h)}
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>
