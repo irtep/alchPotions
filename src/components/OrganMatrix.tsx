@@ -15,32 +15,38 @@ type OrganMatrixProps = {
 const OrganMatrix: React.FC<OrganMatrixProps> = ({ organ, potions, closeHints, nothingTried, inFlask }) => {
   if (!organ) return null;
 
-  // Build sets of all metal-herb combos that are failures (nothingTried) or successes (potions)
-  const nothingCombos = new Set(
+  // Global "nothing" (failures across ANY organ)
+  const globalNothingCombos = new Set(
     nothingTried.map((n) => `${n.combo.metal}|||${n.combo.herb}`)
   );
-  /*
-  const potionCombos = new Map<string, string>(
-    potions.map((p) => [`${p.combo.metal}|||${p.combo.herb}`, p.name])
+
+  // Local "nothing" (failures only with THIS organ)
+  const localNothingCombos = new Set(
+    nothingTried
+      .filter((n) => n.combo.organ === organ)
+      .map((n) => `${n.combo.metal}|||${n.combo.herb}`)
   );
-*/
+
   const getCellContent = (metal: string, herb: string) => {
     const key = `${metal}|||${herb}`;
 
-    // ✅ Check if potion exists for this organ
+    // ✅ Potion for this organ
     const potion = potions.find(
       (p) => p.combo.metal === metal && p.combo.organ === organ && p.combo.herb === herb
     );
     if (potion) return `✅ ${potion.name}`;
 
-    // ⚠️ Check if close hint exists for this organ
+    // ⚠️ Close hint for this organ
     const close = closeHints.find(
       (c) => c.combo.metal === metal && c.combo.organ === organ && c.combo.herb === herb
     );
     if (close) return `⚠️ ${close.name}`;
 
-    // ❌ Generalized "Nothing": if this metal-herb combo failed for any organ
-    if (!potion && nothingCombos.has(key)) return "❌ Nothing";
+    // ❌ Local nothing (specific to this organ)
+    if (localNothingCombos.has(key)) return "❌ Local Nothing";
+
+    // ❌ Global nothing (applies to all organs, even if not tested here)
+    if (globalNothingCombos.has(key)) return "❌ Nothing";
 
     // 🧪 In Flask
     const flask = inFlask.find(
