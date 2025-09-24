@@ -24,7 +24,11 @@ Damager	+str	Blood Moss : AUTUMN(arvio)
 FagFood	+cha	Mystic Carrot :
 
 Autumnina:
-apple ja yarrow, muihin löytyy summer vastikkeet (publicgardenista taitaa saada molemmat)
+apple ja yarrow, barberry, muihin löytyy summer vastikkeet (publicgardenista taitaa saada molemmat)
+
+barberry / yarrow full autumn
+apple / wormwood full autumn
+cotton hyvä myös, kun mystic spinach joka summer niin harvinainen
 
 https://sites.google.com/site/jermusbatmudpit/plant-lore
 
