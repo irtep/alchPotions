@@ -310,11 +310,16 @@ function App() {
         ))}
       </ul>
 
-      <h3>Close Hints</h3>
+      <h3>
+        Close Hints{" "}
+        <small style={{ fontWeight: "normal" }}>
+          ({new Set(closeHints.map((c) => c.name)).size} unique)
+        </small>
+      </h3>
       <ul>
         {closeHints
-          .slice() // make a shallow copy so state isn’t mutated
-          .sort((a, b) => a.name.localeCompare(b.name)) // sort alphabetically by name
+          .slice()
+          .sort((a, b) => a.name.localeCompare(b.name))
           .map((c) => (
             <li key={c.id}>
               <span
@@ -399,7 +404,7 @@ function App() {
         potions={potions}
         closeHints={closeHints}
         nothingTried={nothingTried}
-        inFlask={inFlask}/>
+        inFlask={inFlask} />
 
       {/* Backup */}
       <div style={{ marginTop: "1rem" }}>
@@ -407,7 +412,7 @@ function App() {
         <button onClick={importFromClipboard} style={{ marginLeft: "1rem", background: 'darkRed', color: 'white' }}>Import from Clipboard (careful!))</button>
       </div>
 
-      <HerbSeasons/>
+      <HerbSeasons />
 
       <div
         style={{
@@ -415,7 +420,7 @@ function App() {
           background: 'darkBlue'
         }}
       >
-        0.7.4
+        0.7.5
       </div>
     </div>
   );
