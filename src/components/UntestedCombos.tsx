@@ -48,11 +48,11 @@ const UntestedCombos: React.FC<UntestedCombosProps> = ({
       untested.push(`${m} + ${h}`);
     });
   });
-
+/*
   useEffect(() => {
     console.log(organMetals, organHerbs);
   });
-
+*/
   return (
     <div style={{ marginTop: "1rem", padding: "1rem", border: "1px solid gray" }}>
       <h3>
