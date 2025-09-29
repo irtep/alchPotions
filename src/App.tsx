@@ -7,6 +7,7 @@ import { countMatches, generateAllCombos, getColor } from "./functions/helpFunct
 import OrganMatrix from "./components/OrganMatrix";
 import IngredientDropdown from "./components/IngredientDropDown";
 import HerbSeasons from "./components/HerbSeasons";
+import UntestedCombos from "./components/UntestedCombos";
 
 export type Combo = { metal: string; organ: string; herb: string };
 export type Potion = { id: string; combo: Combo; name: string };
@@ -391,6 +392,8 @@ function App() {
         inFlask={inFlask}
       />
 
+      <UntestedCombos potions={potions} closeHints={closeHints} nothingTried={nothingTried} inFlask={inFlask}/>
+
       {/* Backup */}
       <div style={{ marginTop: "1rem" }}>
         <button onClick={exportToClipboard} style={{ background: 'green' }}>Export to Clipboard</button>
@@ -405,7 +408,7 @@ function App() {
           background: 'darkBlue'
         }}
       >
-        0.6.2
+        0.7.0
       </div>
     </div>
   );
