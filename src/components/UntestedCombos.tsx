@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import type { Potion, CloseHint, NothingTried, InFlask } from "../App";
 import { metals } from "../data/metals";
 import { herbs } from "../data/herbs";
