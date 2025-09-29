@@ -392,7 +392,14 @@ function App() {
         inFlask={inFlask}
       />
 
-      <UntestedCombos potions={potions} closeHints={closeHints} nothingTried={nothingTried} inFlask={inFlask}/>
+      <UntestedCombos
+        organ={organ}
+        metal={metal}
+        herb={herb}
+        potions={potions}
+        closeHints={closeHints}
+        nothingTried={nothingTried}
+        inFlask={inFlask}/>
 
       {/* Backup */}
       <div style={{ marginTop: "1rem" }}>
@@ -408,7 +415,7 @@ function App() {
           background: 'darkBlue'
         }}
       >
-        0.7.0
+        0.7.2
       </div>
     </div>
   );
